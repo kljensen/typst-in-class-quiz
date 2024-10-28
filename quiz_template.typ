@@ -31,81 +31,40 @@
     table(columns: 2, ..data)
   }
 
-  // The top-level enum is the quiz: an ordered list
-  // of questions.
-  show enum.where(tight: false): it => {
-    // Iterate over the questions, each of which
-    // is an enum_item.
-    it.children
-      .enumerate()
-      .map(((n, item)) => {
+  let question_number = counter("question_number")
+  let option_number = counter("option_number")
 
-        // Initialize the correct answers for this
-        // question as an empty array.
-        correct_answers.update( a => {
-          a.push(())
-          return a
-        })
-
-        // This counter will be used to keep track of
-        // the options (potential answers) for this
-        // question. Each option should but markdown
-        // checkbox like
-        let option_number = counter("option_number")
-        option_number.update(0)
-
-        // These are the incorrect options.
-        // Remove the "[ ]"
-        show "[ ]": unchecked => {
-          ""
-        }
-
-        // These are the correct options. We need
-        // to record these as cof
-        show "[x]": checked => {
-
-          // Record the correct answer for this question.
-          context {
-              let qn = question_number.get().first()
-              let on = option_number.get().first()
-              // Append this option number to the array
-              // of correct options for this question
-              // number.
-              correct_answers.update( a => {
-                  a.at(qn - 1).push(on)
-                return a
-              })
-            }
-          ""
-        }
-        // The question options are lists but not enums.
-        // We want them to display as enums with letters.
-        show list: el => {
-          enum(
-            numbering: (it => strong[#numbering("A.", it)]),
-            ..el.children.map(it => {
-            option_number.step()
-            it.body
-          }))
-        }
-        // Increment the question number.
-        question_number.step()
-
-        let number = [
-          #set align(right)
-          #numbering("1.", n + 1)
-        ]
-
-        // And return the question body.
-        grid(
-          columns: (1em, 1fr),
-          gutter: .5em,
-          number,
-          item.body,
-        )
-      })
-      .join()
+  show enum.item: it => {
+    context {
+      let qn = question_number.get().first()
+      question_number.step()
+      [#qn #it]
+    }
   }
+
+
+  show list: it => {
+    option_number.update(0)
+    it
+  }
+
+  show "[x]": it => {
+    context {
+      let qn = question_number.get().first()
+      let on = option_number.get().first()
+      option_number.update(on + 1)
+      [#qn #on x]
+    }
+  }
+  show "[ ]": it => {
+    context {
+      let qn = question_number.get().first()
+      let on = option_number.get().first()
+      option_number.update(on + 1)
+      [#qn #on]
+    }
+  }
+
 
   // --------------------------------------------
   // First page: instructions and answer bubbles
