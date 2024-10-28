@@ -24,7 +24,7 @@
     let data = correct_answers.get().enumerate().map(((i, answer)) => {
       let question = i + 1
       let options = answer.map(o => {
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".at(o - 1)
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".at(o)
       }).join(", ")
       return ([#question], [#options])
     }).flatten()
@@ -34,17 +34,9 @@
   let question_number = counter("question_number")
   let option_number = counter("option_number")
 
-  show enum.item: it => {
-    context {
-      let qn = question_number.get().first()
-      question_number.step()
-      [#qn #it]
-    }
-  }
-
-
   show list: it => {
     option_number.update(0)
+    question_number.step()
     it
   }
 
@@ -52,15 +44,24 @@
     context {
       let qn = question_number.get().first()
       let on = option_number.get().first()
-      [#qn #on x]
       option_number.step()
+      correct_answers.update( ca => {
+        if ca.len() <= qn - 2 {
+          ca.push(())
+        }
+        ca.at(qn - 2).push(on)
+        return ca
+      })
+      // [#qn #on x]
+      [#sym.zws #label(str(qn) + "-" + str(on))]
     }
   }
   show "[ ]": it => {
     context {
       let qn = question_number.get().first()
       let on = option_number.get().first()
-      [#qn #on]
+      // [#qn #on]
+      [#sym.zws #label(str(qn) + "-" + str(on))]
       option_number.step()
     }
   }
@@ -161,6 +162,9 @@
     [== Answer Key]
     context[
       #answer_key()
+    ]
+    context[
+      #correct_answers.get()
     ]
   }
 
