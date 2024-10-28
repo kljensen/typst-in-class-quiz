@@ -145,31 +145,35 @@
     ]
     v(0.25cm)
 
+    let row_of_bubbles = options.clusters().map(c => {
+      [#box(circle(inset: 2pt)[
+        #set align(center)
+        #set text(size: 8pt)
+        #c
+      ])]
+    }).join(" ")
+
+    let elements = ()
     let qn = 1
     let num_questions = question_number.final().first()
     while qn < num_questions + 1 {
 
       // Write the question number. We
       // shift this to align with bubbles.
-      box[
-        #set text(baseline: -0.25em)
-        #qn. ~~
+      let label = box[
+        #set align(right)
+        #set text(baseline: 0.25em)
+        #qn.
       ]
-
-      // Now write the bubbles. The options
-      // should be like "ABCDE".
-      for c in options [
-        #box[
-          #circle(inset: 2pt)[
-            #set align(center + horizon)
-            #set text(size: 8pt)
-            #c
-          ]
-        ]
-      ]
-      linebreak()
+      elements.push(label)
+      elements.push(row_of_bubbles)
       qn += 1
     }
+    grid(
+      columns: 2,
+      gutter: .75em,
+      ..elements
+    )
   }
   pagebreak()
 
