@@ -52,16 +52,16 @@
     context {
       let qn = question_number.get().first()
       let on = option_number.get().first()
-      option_number.update(on + 1)
       [#qn #on x]
+      option_number.step()
     }
   }
   show "[ ]": it => {
     context {
       let qn = question_number.get().first()
       let on = option_number.get().first()
-      option_number.update(on + 1)
       [#qn #on]
+      option_number.step()
     }
   }
 
