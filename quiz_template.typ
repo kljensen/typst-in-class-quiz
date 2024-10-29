@@ -37,7 +37,10 @@
   show list: it => {
     option_number.update(0)
     question_number.step()
-    it
+    let bodies = it.children.map( c => {
+      c.body
+    })
+    enum(numbering: "A.", ..bodies)
   }
 
   show "[x]": it => {
