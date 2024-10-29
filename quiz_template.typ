@@ -146,9 +146,9 @@
     v(0.25cm)
 
     let row_of_bubbles = options.clusters().map(c => {
-      [#box(circle(inset: 2pt)[
+      [#box(circle(inset: 1pt)[
         #set align(center)
-        #set text(size: 8pt)
+        #set text(size: 6pt)
         #c
       ])]
     }).join(" ")
@@ -160,9 +160,8 @@
 
       // Write the question number. We
       // shift this to align with bubbles.
-      let label = box[
-        #set align(right)
-        #set text(baseline: 0.25em)
+      let label = block[
+        #set text(baseline: 0.05em)
         #qn.
       ]
       elements.push(label)
@@ -171,6 +170,7 @@
     }
     grid(
       columns: 2,
+      align: (right, center),
       gutter: .75em,
       ..elements
     )
